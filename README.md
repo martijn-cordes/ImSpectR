@@ -22,6 +22,7 @@ To analyze a preloaded test dataset of 22 Vb families of a B6 mouse please run:
 #### Preprocessing
 
 ```r
+library(ImSpectR)
 data(fsa.loaded)
 my.ladder <- c(35, 50, 75, 100, 139, 150, 160, 200, 250,300, 340, 350, 400, 450, 490, 500)
 ladder.info.attach(stored=fsa.loaded, ladder=my.ladder, ladd.init.thresh=1000, draw=F,method="iter2")
