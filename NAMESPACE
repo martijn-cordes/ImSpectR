@@ -1,0 +1,8 @@
+export(get_basepair_positions)
+export(generate_artifical_WT)
+export(align_peak_pattern)
+export(get_peak_positions)
+export(score_pattern_alignment)
+export(score_perfect_plot)
+export(score_sample)
+export(score_dataset)
