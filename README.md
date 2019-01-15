@@ -17,7 +17,7 @@ devtools::install_github("rstudio/rsconnect")
 
 ## Usage
 
-To run a preloaded test dataset of 22 Vb families of a B6 mouse run:
+To analyze a preloaded test dataset of 22 Vb families of a B6 mouse please run:
 
 #### Preprocessing
 
