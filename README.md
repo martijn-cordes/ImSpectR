@@ -1,12 +1,9 @@
 # ImSpectR
 R package to quantify spectratypes for immune repertoire diversity
 
-Version: 1.0.0
-
-Author: Martijn Cordes
-
-Maintainer: Martijn Cordes <m.cordesf@lumc.nl>
-
+Version: 1.0.0<br>
+Author: Martijn Cordes<br>
+Maintainer: Martijn Cordes <m.cordesf@lumc.nl><br>
 Description: With this package .fsa files containing spectratype data representing the CDR3 region of B and T-cell receptors can be loaded, visualized and scored for quantification of the immune repertoire. 
 
 ## Installation
