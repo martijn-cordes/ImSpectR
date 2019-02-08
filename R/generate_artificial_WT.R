@@ -13,10 +13,8 @@ generate_artifical_WT <- function(no.peaks, plot=F, three.bp.positions=NULL, per
 {
   #Generate peak pattern
   no.peaks <- no.peaks
-  #sample_index <- which(names(all_basepair_positions) == sample_name)
 
   if (is.null(three.bp.positions)) {
-    #three.bp.positions <- length(which((all_basepair_positions[[sample_index]]$xx > 100) & (all_basepair_positions[[sample_index]]$xx < 103)))
     three.bp.positions <- 36
   }
 
@@ -36,9 +34,6 @@ generate_artifical_WT <- function(no.peaks, plot=F, three.bp.positions=NULL, per
 
   y_second_curve <- dnorm(x, mean = mean, sd = total_peak_width/5)
   y_second_curve <- y_second_curve * ((max(y) * percentage_second_curve_height / 100) / max(y_second_curve))
-
-  #plot(x,y, type="l", col="green")
-  #points(x,y_second_curve, type="l", col="red")
 
   position_peak <- c()
   for (i in 1:no.peaks-1) {
@@ -91,21 +86,11 @@ generate_artifical_WT <- function(no.peaks, plot=F, three.bp.positions=NULL, per
       y_single_peak  <- y_single_peak  * height_single_peak / max(y_single_peak )
     }
 
-    #points(x_single_peak,y_single_peak, type="l", col="blue")
-
     if (percentage_second_curve_height > 1) {
       difference_in_lines <- y_second_curve[which(x %in% x_single_peak)] - y_single_peak
 
       overlap_1 <- order(difference_in_lines[1:which(diff(which(difference_in_lines > 0)) > 5)])[1]
       overlap_2 <- which(difference_in_lines > 0)[which(diff(which(difference_in_lines > 0)) > 5)+1]
-
-
-      #overlaps <- order(abs(y_second_curve[which(x %in% x_single_peak)] - y_single_peak))
-      #overlaps <- overlaps[c(1,(which(abs(diff(overlaps)) > 5) + 1)[1])]
-
-      # overlaps <- overlaps[order(overlaps)]
-      #overlap_1 <- overlaps[1]
-      #overlap_2 <- overlaps[2]
 
       x_single_peak <- x_single_peak[-c(c((1:overlap_1-1)),c((overlap_2+1):length(y_single_peak)))]
       y_single_peak <- y_single_peak[-c(c((1:overlap_1-1)),c((overlap_2+1):length(y_single_peak)))]
@@ -117,18 +102,14 @@ generate_artifical_WT <- function(no.peaks, plot=F, three.bp.positions=NULL, per
     height_single_peak <- max(y_single_peak)
     heights_single_peaks <- c(heights_single_peaks, height_single_peak)
 
-    #points(x_single_peak,y_single_peak, type="l", col="blue")
-
   }
 
   cp <- c()
   cp[1:length(x)] <- NA
-  #cp[which(!(x %in% x_positions_single_peaks))] <- y_second_curve[which(!(x %in% x_positions_single_peaks))]
   cp[x_positions_single_peaks] <- complete_peak_pattern
   vec <- which(is.na(cp))
   groups <- split(vec, cumsum(seq_along(vec) %in% (which(diff(vec)>1)+1)))
 
-  #cp[c(1,length(cp))] <- y_second_curve[c(1,length(y_second_curve))]
   cp[c(1,length(cp))] <- 0
   cp <- approx(cp, xout=seq_along(cp))$y
 
@@ -136,30 +117,23 @@ generate_artifical_WT <- function(no.peaks, plot=F, three.bp.positions=NULL, per
 
     if(g == 1) {
       data <- cp[(unlist(groups[g])[1]) : (unlist(groups[g])[length(unlist(groups[g]))] + 5)]
-      #plot(data)
       data <- data.frame(x=1:length(data), y=data)
-      loessMod10 <- loess(y ~ x, data=data, span=1, surface="direct") # 100% smoothing span
-      #points(predict(loessMod10), type="l")
+      loessMod10 <- loess(y ~ x, data=data, span=1, surface="direct") # 10% smoothing span
+
       cp[(unlist(groups[g])[1]) : (unlist(groups[g])[length(unlist(groups[g]))] + 5)] <- predict(loessMod10)
     }
 
     else if(g == length(groups)) {
       data <- cp[(unlist(groups[g])[1]-5) : (unlist(groups[g])[length(unlist(groups[g]))])]
-
-      #plot(data)
       data <- data.frame(x=1:length(data), y=data)
-      loessMod10 <- loess(y ~ x, data=data, span=1, surface="direct") # 100% smoothing span
-      #points(predict(loessMod10), type="l")
+      loessMod10 <- loess(y ~ x, data=data, span=1, surface="direct") # 10% smoothing span
       cp[(unlist(groups[g])[1]-5) : (unlist(groups[g])[length(unlist(groups[g]))])] <- predict(loessMod10)
     }
 
     else {
       data <- cp[(unlist(groups[g])[1]-5) : (unlist(groups[g])[length(unlist(groups[g]))] + 5)]
-
-      #plot(data)
       data <- data.frame(x=1:length(data), y=data)
-      loessMod10 <- loess(y ~ x, data=data, span=1, surface="direct") # 100% smoothing span
-      #points(predict(loessMod10), type="l")
+      loessMod10 <- loess(y ~ x, data=data, span=1, surface="direct") # 10% smoothing span
       cp[(unlist(groups[g])[1]-5) : (unlist(groups[g])[length(unlist(groups[g]))] + 5)]  <- predict(loessMod10)
 
     }
@@ -176,8 +150,6 @@ generate_artifical_WT <- function(no.peaks, plot=F, three.bp.positions=NULL, per
   loessMod <- loess(y ~ x, data=df, span=span, surface="direct") # 6% smoothing span
   # get smoothed output
   artifical_WT <- predict(loessMod)
-
-  #points(artifical_WT, type="l", col="red")
 
   if(plot == T) {
     plot(artifical_WT,type="l")

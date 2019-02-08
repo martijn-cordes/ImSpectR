@@ -12,13 +12,8 @@
 score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_curve_height, plot=F) {
 
   percentage = percentage_second_curve_height
-  ########################################
-  ########################################
-  ####
-  #perfect plot benchmark scoring
 
   sample_name <- "In Silico"
-  #sample_index <- which(names(all_basepair_positions) == sample_name)
   total_peak_width <- three.bp.positions*no.peaks
 
   artifical_WT <- generate_artifical_WT(no.peaks, three.bp.positions = 36, percentage_second_curve_height=percentage, plot=F)
@@ -36,16 +31,9 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
 
   if (plot == T) {
     plot(d$reference, type="l", xlim = c(d$index2[idx][1]-25 , d$index2[idx][length(idx)]+25), main="In silico control", xlab="", ylab="", yaxt="n", xaxt="n")
-    #points(d$query, col="red", type="l")
-    #points(d$index2[idx], xts[d$index1[idx]],type="l", col="darkgreen", lwd=2)
   }
 
-
-  #matched <- xts[d$index1[idx]][-which(duplicated(d$index2[idx]))]
   matched <- xts[d$index1[idx]]
-
-
-  #df <- data.frame(x=d$index2[idx][-which(duplicated(d$index2[idx]))], y=matched)
   df <- data.frame(x=d$index2[idx], y=matched)
   loessMod5 <- loess(y ~ x, data=df, span=0.05, surface="direct") # 5% smoothing span
   # get smoothed output
@@ -98,8 +86,6 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
   score_curve_start <- 1
   score_curve_end <- length(sample)
 
-  #plot(all_basepair_positions[[1]]$yy[pos_template], type="l")
-
   x <- seq(score_curve_start,score_curve_end, by = 1)
   mean <- mean(x)-1
   y <- dnorm(x, mean = mean, sd = total_peak_width/5.2)
@@ -110,11 +96,8 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
   }
 
   ##SCORING
-  #score <- as.numeric((trapz(sample) / trapz(artifical_WT))*100)
-
   position_peak <- x_positions_dtw_peaks
   max_peak_no <- which(y[x %in% position_peak] == max(y[x %in% position_peak]))
-
 
   x_pos_max_peak <- x_positions_dtw_peaks[which(peak_heights_dtw_peaks == max(peak_heights_dtw_peaks))]
   second_curve_height <- min(sample[(x_pos_max_peak-three.bp.positions) : (x_pos_max_peak+three.bp.positions)]) / max(peak_heights_dtw_peaks)
@@ -143,19 +126,6 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
     current_slope <- (y[mean(which(round(x) == position_peak[p])[1])] - y_second_curve[mean(which(round(x) == x_single_peak[1])[1])])/(position_peak[p]- x_single_peak[1])
     slope <- c(slope,current_slope)
 
-
-    #####
-    #SD of heightest peak = width of three bp's / 5
-    #SD of individual peaks is dependant on the slope of the heightest peak with above SD
-    #Slope = y2-y1 / x2-x1
-    #y2 = peak height
-    #y1 = 0
-    #x2 = position of peak
-    #x1 = position of peak - SD
-    #so x2-x1 = initial SD
-    #new SD = height of peak to create / slope of heighest peak
-    #new SD slope is right but SD is to small, add log10 of difference of height of peak to heightest peak to compensate
-    #####
     percentage_second_curve_height <- max(y_second_curve) / max(y) * 100
 
     sd <- round(three.bp.positions / (9-(log2(ceil(percentage_second_curve_height) +1)) ))
@@ -177,21 +147,12 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
       overlap_1 <- order(difference_in_lines[1:which(diff(which(difference_in_lines > 0)) > 5)])[1]
       overlap_2 <- which(difference_in_lines > 0)[which(diff(which(difference_in_lines > 0)) > 5)+1]
 
-
-      #overlaps <- order(abs(y_second_curve[which(x %in% x_single_peak)] - y_single_peak))
-      #overlaps <- overlaps[c(1,(which(abs(diff(overlaps)) > 5) + 1)[1])]
-
-      # overlaps <- overlaps[order(overlaps)]
-      #overlap_1 <- overlaps[1]
-      #overlap_2 <- overlaps[2]
-
       x_single_peak <- x_single_peak[-c(c((1:overlap_1-1)),c((overlap_2+1):length(y_single_peak)))]
       y_single_peak <- y_single_peak[-c(c((1:overlap_1-1)),c((overlap_2+1):length(y_single_peak)))]
     }
 
 
     complete_peak_pattern <- c(complete_peak_pattern, y_single_peak)
-    #x_positions_single_peaks <- c(x_positions_single_peaks, x_single_peak)
     height_single_peak <- max(y_single_peak)
     heights_single_peaks <- c(heights_single_peaks, height_single_peak)
     height_sample_peak <-  max(sample[x_single_peak])
@@ -204,8 +165,6 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
 
     y_single_peak <- y_single_peak - y_second_curve[which(x %in% x_single_peak)]
     y_single_peak[which(y_single_peak < 0)] <- 0
-
-    #points(x_single_peak, y_second_curve[which(x %in% x_single_peak)])
 
     corrected_sample <- sample[x_single_peak] - y_second_curve[which(x %in% x_single_peak)]
     corrected_sample[which(corrected_sample < 0)] <- 0
@@ -221,7 +180,6 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
 
     single_peak_penalties <- c(single_peak_penalties, single_peak_penalty_area)
     peak_area_corrected_sample <- as.numeric(trapz(corrected_sample))
-    #peak_area_corrected_sample <- as.numeric(trapz(corrected_sample)) - single_peak_penalty_area
 
     peak_area_wt <- c(peak_area_wt, trapz(y_single_peak))
     peak_area_sample <- c(peak_area_sample, peak_area_corrected_sample)
@@ -246,13 +204,8 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
   bell_curve_area <- trapz(y)
   second_curve_area <- trapz(y_second_curve)
 
-
-  #0.9360127
   within_correction <- (plot_area - second_curve_area) / sum(peak_area_sample)
-  #within_correction <- 0.9360127
-
   area_in_between_peaks <- (plot_area - second_curve_area) - (sum(peak_area_sample) * within_correction)
-  #area_in_between_peaks <- area_in_between_peaks + sum(single_peak_penalties)
   max_area_in_between_wt_peaks <- (bell_curve_area - second_curve_area) - sum(peak_area_wt)
 
   percentage_in_between <- area_in_between_peaks / (max_area_in_between_wt_peaks / 100)
@@ -260,7 +213,6 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
   plot_score <- (length(fraction) / sum(fraction)) * 100
   plot_score <- plot_score - (plot_score*((percentage_in_between*2)/100))
   plot_score_correction <- 100/plot_score
-  #plot_score_correction <- 1.037922
   plot_score <- plot_score * plot_score_correction
 
   if (plot == T) {
@@ -268,7 +220,6 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
            paste("Peak score :", round(plot_score,2))
     )
   }
-
 
   score_adjustements <- c(within_correction, plot_score_correction)
 

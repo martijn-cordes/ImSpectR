@@ -1,6 +1,6 @@
 #' @title Score a single sample
 #'
-#' @description Score a single sample. This function will search the data for a peak pattern best fitting an in-silico pattern defined by the user, select the in-frame peaks and score the pattern.
+#' @description Score a single sample. This function will search the data for a peak pattern best fitting an expected model defined by the user, select the in-frame peaks and score the pattern.
 #'
 #' @param symbol
 #'
@@ -9,10 +9,15 @@
 #' @examples score_sample(sample, no.peaks)
 #'
 #' @export score_sample
-score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching=F, plot.curve.fitting=F, plot=T) {
-
+score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching=F, plot.curve.fitting=F, plot.expected.model=T, plot=T) {
+  
+  if(plot==F){
+    plot.expected.model <-F
+  }
+  
+  
   if(length(sample)>1) {
-    current_sample <- score_dataset(sample, no.peaks, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching = F, plot.curve.fitting = plot.curve.fitting, plot=plot)
+    current_sample <- score_dataset(sample, no.peaks, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching = F, plot.curve.fitting = plot.curve.fitting, plot.expected.model = plot.expected.model, plot=plot)
   }
 
   else {
@@ -48,9 +53,6 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
       message("No peak pattern found")
 
       peak_score <- 0
-      #current_sample <- list(rawdata = all_basepair_positions, plot_data = all_basepair_positions, pattern_alignment=NA, peak_positions = NA, score=peak_score)
-      #current_sample <- list(current_sample)
-      #names(current_sample) <- sample_name
       current_sample <- data.frame(peak.score=peak_score)
       rownames(current_sample) <- sample_name
 
@@ -72,14 +74,9 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
       #sliding window for matched pattern
       start <- peak.window[1]
       min.width.pattern <- (no.peaks * 4) + 2
-      #min.width.pattern <- 30
       all_widths <- c()
       all_starts <- c()
       all_distances <- c()
-
-      #total <- peak.window[2]-min.width.pattern
-      #message("Performing sliding window DTW")
-      #pb <- txtProgressBar(min = start, max = total, style = 3)
 
       while(start < peak.window[2]-min.width.pattern) {
 
@@ -88,7 +85,6 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
         sample_data <- all_basepair_positions[[1]]$yy[window_start:window_end]
 
         if (max(sample_data) > 1000) {
-          #pattern_alignment <- align_peak_pattern(query, sample_data, start=start, pattern.width = min.width.pattern, window.size = window.size, plot=F)
           pattern_alignment <- align_peak_pattern(query, all_basepair_positions, start=start, pattern.width = min.width.pattern, window.size = window.size,  plot=F)
 
           matched_pattern_range <- all_basepair_positions[[1]]$xx[pattern_alignment$x + which(all_basepair_positions[[1]]$xx > start)[1]]
@@ -123,9 +119,6 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
         message("No peak pattern found")
 
         peak_score <- 0
-        #current_sample <- list(rawdata = all_basepair_positions, plot_data = all_basepair_positions, pattern_alignment=NA, peak_positions = NA, score=peak_score)
-        #current_sample <- list(current_sample)
-        #names(current_sample) <- sample_name
         current_sample <- data.frame(peak.score=peak_score)
         rownames(current_sample) <- sample_name
 
@@ -138,13 +131,8 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
       } else {
         start <- (peak.window[1] -1) + which(all_distances == min(all_distances))[1]
 
-        #Which is the best mean between widths and distance
-        #score_widths <- all_widths
-        #score_widths[rev(order(score_widths))] <- 1 : length(all_widths)
         score_distances <- all_distances
         score_distances[order(score_distances)] <- 1 : length(all_widths)
-        #scores <- (score_widths + score_distances)
-        #start <- (peak.window[1] -1) + order(scores)[1]
 
         top_distances <- order(score_distances)[1:5]
 
@@ -162,12 +150,8 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
             window_end <- which(all_basepair_positions[[1]]$xx > start+min.width.pattern)[1]
             sample_data <- all_basepair_positions[[1]]$yy[window_start:window_end]
 
-            #pattern_alignment <- align_peak_pattern(query, sample_data, start=start, pattern.width=min.width.pattern, window.size= window.size, plot=F)
             pattern_alignment <- align_peak_pattern(query, all_basepair_positions, start=start, pattern.width = min.width.pattern, window.size = window.size,  plot=F)
-
-            #bp_positions_dtw_peaks <- get_peak_positions(pattern_alignment, sample_data, peak.margin = peak.margin, plot=F)
             bp_positions_dtw_peaks <- get_peak_positions(pattern_alignment, all_basepair_positions, peak.margin = peak.margin, plot=F)
-
 
             if (nrow(pattern_alignment) > three.bp.positions * (no.peaks + 1)) {
               total.pattern.width <- nrow(pattern_alignment)
@@ -187,11 +171,9 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
 
             }
 
-            peak_score <- score_pattern_alignment(bp_positions_dtw_peaks, no.peaks, three.bp.positions, total.pattern.width, alt.scores = F, plot.curve.fitting = F, plot=F)
+            peak_score <- score_pattern_alignment(bp_positions_dtw_peaks, no.peaks, three.bp.positions, total.pattern.width, alt.scores = F, plot.curve.fitting = F, plot.expected.model=F, plot=F)
             top_scores <- c(top_scores, peak_score)
-            # else {
-            #  top_scores <- c(top_scores, 0)
-            #}
+
           }
 
         }
@@ -209,18 +191,12 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
         if (max(top_scores) > 0) {
 
           start <- (peak.window[1] -1) + top_distances[which(top_scores == max(top_scores))[1]]
-          #start <- (peak.window[1] -1) + top_distances[4]
-
-          #sample_starts <- c(sample_starts,start)
-
           window_start <- which(all_basepair_positions[[1]]$xx > start)[1]
           window_end <- which(all_basepair_positions[[1]]$xx > start+min.width.pattern)[1]
           sample_data <- all_basepair_positions[[1]]$yy[window_start:window_end]
 
-          #png(paste("~/Dropbox/LUmc/Genescan/WT_database/Selected_for_paper/WTVB17_2",".png", sep=""), width=200, height=150, units='mm', res=250)
           pattern_alignment <- align_peak_pattern(query, all_basepair_positions, start=start, pattern.width=min.width.pattern, window.size= window.size, plot=plot.pattern.matching)
-          bp_positions_dtw_peaks <- get_peak_positions(pattern_alignment, all_basepair_positions, peak.margin = peak.margin, plot=plot)
-          #points(df_smooth$x + window_start,df_smooth$y,type="l", col="darkgreen", lwd=2)
+          bp_positions_dtw_peaks <- get_peak_positions(pattern_alignment, all_basepair_positions, peak.margin = peak.margin, plot=plot, plot.expected.model=plot.expected.model)
 
           if (nrow(pattern_alignment) > three.bp.positions * (no.peaks + 1)) {
             total.pattern.width <- nrow(pattern_alignment)
@@ -228,20 +204,13 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
             total.pattern.width <- three.bp.positions * (no.peaks + 1)
           }
 
-          peak_score <- score_pattern_alignment(bp_positions_dtw_peaks, no.peaks, three.bp.positions,total.pattern.width, plot.curve.fitting=plot.curve.fitting, plot=T, alt.scores=F)
-          #dev.off()
-
+          peak_score <- score_pattern_alignment(bp_positions_dtw_peaks, no.peaks, three.bp.positions,total.pattern.width, plot.curve.fitting=plot.curve.fitting, plot.expected.model=plot.expected.model , plot=plot, alt.scores=F)
           plot_score <- peak_score
           message("Scoring complete")
-          #peak_score_df <- rbind(peak_score_df, c(fsa.names[i],as.numeric(peak_score)))
 
         } else{
           peak_score <- 0
-          #current_sample <- list(rawdata = all_basepair_positions, plot_data = all_basepair_positions, pattern_alignment=NA, peak_positions = NA, score=peak_score)
-          #current_sample <- list(current_sample)
-          #names(current_sample) <- sample_name
           current_sample <- data.frame(peak.score=peak_score)
-          #rownames(current_sample) <- sample_name
 
           if(plot==T) {
             plot( all_basepair_positions[[1]]$xx,  all_basepair_positions[[1]]$yy, type="l", xaxt="n",xlab="position in basepairs", ylab="" ,main=sample_name)
@@ -250,9 +219,6 @@ score_sample <- function(sample, no.peaks, peak.margin=NULL, peak.window=NULL, w
 
         }
 
-        #current_sample <- list(rawdata = all_basepair_positions, plot_data = sample_data, pattern_alignment=pattern_alignment, peak_positions = bp_positions_dtw_peaks, score=peak_score$ps)
-        #current_sample <- list(current_sample)
-        #names(current_sample) <- sample_name
         current_sample <- data.frame(peak.score=peak_score)
         rownames(current_sample) <- sample_name
 

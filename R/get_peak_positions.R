@@ -9,8 +9,13 @@
 #' @examples get_peak_positions(alignment, sample)
 #'
 #' @export get_peak_positions
-get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T)
+get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T, plot.expected.model=T)
 {
+  if (plot==F) {
+    plot.expected.model <- F
+  }
+  
+  
   if (is.null(peak.margin)) {
     peak.margin <- 10
   }
@@ -72,7 +77,6 @@ get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T)
     }
 
 
-
     if (max(sample[(position-peak.margin) : (position+peak.margin)], na.rm=T) > 0 ) {
       x_pos <- which(all_basepair_positions[[1]]$yy[pos_template] %in% sample[which(sample == max(sample[(position-peak.margin) : (position+peak.margin)], na.rm=T))])
 
@@ -84,7 +88,6 @@ get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T)
 
       bp_positions_dtw_peaks <- c(bp_positions_dtw_peaks,
                                   all_basepair_positions[[1]]$xx[pos_template][which(all_basepair_positions[[1]]$yy[pos_template] %in% sample[which(sample == max(sample[(position-peak.margin) : (position+peak.margin)], na.rm=T))])]
-                                  #all_basepair_positions[[1]]$xx[which(all_basepair_positions[[1]]$yy %in% sample[which(sample == max(sample[(position-peak.margin) : (position+peak.margin)], na.rm=T))])]
       )
 
     }
@@ -100,20 +103,17 @@ get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T)
   }
 
 
-  #bp_positions_dtw_peaks <-  all_basepair_positions[[1]]$xx[pos_template][
-  #which(all_basepair_positions[[1]]$yy[pos_template] %in% sample[alignment$x[which(alignment$y %in% peaks[,2])]])]
-
   if(plot == T) {
 
     plot(all_basepair_positions[[1]]$yy[pos_template] , type="l", main=names(all_basepair_positions)[1], xlim=c(x_positions_dtw_peaks[1]-100, x_positions_dtw_peaks[length(x_positions_dtw_peaks)]+100),ylim=c(0,max(sample)), xaxt="n", xlab="position in basepairs", ylab="", lwd=2)
-    #axis(side=1,at=x_positions_dtw_peaks, labels=round(bp_positions_dtw_peaks))
     text(x_positions_dtw_peaks, par("usr")[3] - 0.2, labels =round(bp_positions_dtw_peaks) , srt = 45, pos = 1, xpd = TRUE)
-    points(
-      x_positions_dtw_peaks,
-      peak_heights_dtw_peaks, col="red"
-    )
-
-    #points(which(pos_template %in% alignment$x_pos),alignment$y,type="l", col="darkgreen", lwd=2)
+    
+    if (plot.expected.model == T) {
+      points(
+        x_positions_dtw_peaks,
+        peak_heights_dtw_peaks, col="red"
+      )
+    }
 
   }
 

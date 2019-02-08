@@ -11,8 +11,6 @@
 #' @export align_peak_pattern
 align_peak_pattern <- function(pattern, sample, plot.pattern.matching=F, start=NULL, pattern.width=NULL, window.size=1, sliding.window=T)
 {
-  #pattern <- artifical_WT
-  #sample <- generate_monoclonal_artifical_WT(10, fsa.names[1])
 
   if(is.null(sliding.window)) {
     sliding.window <- T
@@ -34,18 +32,10 @@ align_peak_pattern <- function(pattern, sample, plot.pattern.matching=F, start=N
     alignment <- dtw(pattern,sample, keep=TRUE,step=asymmetricP05, open.end=T,open.begin=T)
   }
 
-  #alignment <- dtw(pattern,sample, keep=TRUE,step=asymmetricP2, open.end=T,open.begin=T,window.type='sakoechiba',window.size=1)
-  #alignment <- dtw(pattern,sample, keep=TRUE,step=symmetricP05, window.size=1)
-
   d <- alignment
   xts <- d$query
   idx <- 1:length(d$index1)
-  #plot(d$reference, type="l", xlim = c(d$index2[idx][1]-100 , d$index2[idx][length(idx)]+100), main=fsa.names[i])
-  #points(d$query, col="red", type="l")
-  #points(d$index2[idx], xts[d$index1[idx]],type="l", col="darkgreen", lwd=2)
-
   matched <- xts[d$index1[idx]][-which(duplicated(d$index2[idx]))]
-
 
   df <- data.frame(x=d$index2[idx][-which(duplicated(d$index2[idx]))], y=matched)
   loessMod5 <- loess(y ~ x, data=df, span=0.05, surface="direct") # 5% smoothing span

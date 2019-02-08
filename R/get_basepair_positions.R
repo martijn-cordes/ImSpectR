@@ -32,7 +32,7 @@ get_basepair_positions <- function (my.inds, cols = 1, ladder, channel.ladder = 
     channel.ladder <- channel.ladder
   }
   if (dim(my.inds[[1]])[2] < channel.ladder) {
-    print(paste("ERROR MY FRIEND!! you have indicated an argument channel.ladder=5, but your data contains less channels/colors"))
+    print(paste("Error: you have indicated an argument channel.ladder=5, but your data contains less channels/colors"))
     stop
   }
 
@@ -96,29 +96,23 @@ get_basepair_positions <- function (my.inds, cols = 1, ladder, channel.ladder = 
   ##Only select linear part of bp conversion curve, cutoff data after shift of slope by calculating derivative of curve
   for(i in 1:length(all_basepair_positions)) {
     bp_data <- data.frame(x=1:length(all_basepair_positions[[i]]$xx), y=all_basepair_positions[[i]]$xx)
-    #plot(y ~ x, data = as.data.frame(bp_data), main=names(all_samples)[i])
 
     DeltaY <- diff(bp_data$y)
     Turns <- which(DeltaY[-1] * DeltaY[-length(DeltaY)] < 0) + 1
-    #print(Turns)
 
     if(length(Turns)>1) {
       if (diff(Turns)>5000) {
         all_basepair_positions[[i]]$xx <- all_basepair_positions[[i]]$xx[Turns[1]:Turns[2]]
         all_basepair_positions[[i]]$yy <- all_basepair_positions[[i]]$yy[Turns[1]:Turns[2]]
       }
-      #points(bp_data$x[Turns], bp_data$y[Turns], pch=16, col="red")
     }
     if(length(Turns)==1) {
       if ((Turns)>6000) {
         all_basepair_positions[[i]]$xx <- all_basepair_positions[[i]]$xx[0:Turns[1]]
         all_basepair_positions[[i]]$yy <- all_basepair_positions[[i]]$yy[0:Turns[1]]
       }
-      #points(bp_data$x[Turns], bp_data$y[Turns], pch=16, col="red")
     }
 
-
-    #plot(all_basepair_positions[[i]]$xx, main=names(all_samples)[i])
   }
 
   names(all_basepair_positions) <- gsub(".fsa", "",names(my.inds))
