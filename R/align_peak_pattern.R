@@ -37,6 +37,7 @@ align_peak_pattern <- function(pattern, sample, plot.pattern.matching=F, start=N
   idx <- 1:length(d$index1)
   matched <- xts[d$index1[idx]][-which(duplicated(d$index2[idx]))]
 
+
   df <- data.frame(x=d$index2[idx][-which(duplicated(d$index2[idx]))], y=matched)
   loessMod5 <- loess(y ~ x, data=df, span=0.05, surface="direct") # 5% smoothing span
   # get smoothed output

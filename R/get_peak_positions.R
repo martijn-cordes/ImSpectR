@@ -9,19 +9,20 @@
 #' @examples get_peak_positions(alignment, sample)
 #'
 #' @export get_peak_positions
-get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T, plot.expected.model=T)
+get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T,plot.curve.fitting=plot.curve.fitting, plot.expected.model=T)
 {
   if (plot==F) {
     plot.expected.model <- F
   }
-  
-  
+
+
   if (is.null(peak.margin)) {
     peak.margin <- 10
   }
 
   all_basepair_positions <- sample
   assign("all_basepair_positions", all_basepair_positions, envir = .GlobalEnv)
+
 
   if(is.null(pos_template)){
     assign("pos_template", (1:length(all_basepair_positions[[1]]$xx)), envir = .GlobalEnv)
@@ -67,8 +68,7 @@ get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T, plot.
       position <- alignment$x[which(floor(alignment$y) %in% round(peaks[,2][p],-1))][1]
     }
 
-
-    if (position - peak.margin < 0) {
+    if (position - peak.margin <= 0) {
       peak.margin <- position
     }
 
@@ -105,10 +105,10 @@ get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T, plot.
 
   if(plot == T) {
 
-    plot(all_basepair_positions[[1]]$yy[pos_template] , type="l", main=names(all_basepair_positions)[1], xlim=c(x_positions_dtw_peaks[1]-100, x_positions_dtw_peaks[length(x_positions_dtw_peaks)]+100),ylim=c(0,max(sample)), xaxt="n", xlab="position in basepairs", ylab="", lwd=2)
+    plot(all_basepair_positions[[1]]$yy[pos_template] , col="black" , type="l", main=names(all_basepair_positions)[1], xlim=c(x_positions_dtw_peaks[1]-100, x_positions_dtw_peaks[length(x_positions_dtw_peaks)]+100),ylim=c(0,max(sample)), xaxt="n", xlab="length in basepairs", ylab="", lwd=2)
     text(x_positions_dtw_peaks, par("usr")[3] - 0.2, labels =round(bp_positions_dtw_peaks) , srt = 45, pos = 1, xpd = TRUE)
-    
-    if (plot.expected.model == T) {
+
+    if (plot.curve.fitting == T) {
       points(
         x_positions_dtw_peaks,
         peak_heights_dtw_peaks, col="red"
