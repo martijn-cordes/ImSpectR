@@ -11,6 +11,9 @@
 #' @export score_sample
 score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching=F, plot.curve.fitting=F, plot.expected.model=T, plot=T) {
 
+  options(warn=-1)
+
+  
   if(plot==F){
     plot.expected.model <-F
   }
