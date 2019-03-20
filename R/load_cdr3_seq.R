@@ -11,7 +11,6 @@
 #' @export load_cdr3_seq
 load_cdr3_seq <- function(folder, cdr3Length_column, geneFamily_column, sep=sep) {
 
-  #folder <- "~/Desktop/LUMC/CDR3_files/C57BL6_WT_set/"
   files <- list.files(folder)
 
   all_files <- c()
