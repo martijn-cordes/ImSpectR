@@ -1,5 +1,5 @@
 # ImSpectR
-R package to quantify spectratypes for immune repertoire diversity
+R package to quantify CDR3 data for immune repertoire diversity
 
 Version: 1.5.1<br>
 Author and Maintainer: [Martijn Cordes](mailto:m.cordes@lumc.nl) <br>
