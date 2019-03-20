@@ -11,6 +11,9 @@
 #' @export load_cdr3_seq
 load_cdr3_seq <- function(folder, cdr3Length_column, geneFamily_column, sep=sep) {
 
+  options(warn=-1)
+  options("getSymbols.warning4.0"=FALSE)
+  
   files <- list.files(folder)
 
   all_files <- c()
