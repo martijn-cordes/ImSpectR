@@ -41,26 +41,24 @@ score_dataset(spectratype_dataset, no.peaks = 7)
 
 ## Analyze CDR3 sequencing data
 
-To load 
+A control data set of healthy mice was included as a test set The data set is comprised of 4 C57Bl/6 mice from Charles River Laboratories. Samples include spleen and thymus tissue from each mouse. Tab seperated (tsv) files were dowloaded from the Adaptive Biotech database for immunoSEQ data: https://clients.adaptivebiotech.com/pub/b4ac7a84-1e69-4d60-8254-845720454d7d
 
 #### Preprocessing
 
 ```r
 library(ImSpectR)
-data(fsa.loaded)
-my.ladder <- c(35, 50, 75, 100, 139, 150, 160, 200, 250,300, 340, 350, 400, 450, 490, 500)
-ladder.info.attach(stored=fsa.loaded, ladder=my.ladder, ladd.init.thresh=1000, draw=F,method="iter2")
-spectratype_dataset <- get_basepair_positions(fsa.loaded, cols = 1, my.ladder, channel.ladder=NULL,  init.thresh=1750, ladd.init.thresh=1000)
+folder <- system.file("extdata/cdr_sequencing_data/", package="ImSpectR”)
+sequencing_dataset <- load_cdr3_seq(folder, cdr3Length_column = 5, geneFamily_column = 7, sep="")
 ```
 #### Score a single sample 
 
 ```r
-score_sample(spectratype_dataset[1], no.peaks = 7)
+score_sample(sequencing_dataset[1], no.peaks = 7, peak.window = c(0,200))
 ```
 #### Score complete dataset
 
 ```r
-score_dataset(spectratype_dataset, no.peaks = 7)
+score_dataset(sequencing_dataset, no.peaks = 7, peak.window = c(0,200))
 ```
 
 
