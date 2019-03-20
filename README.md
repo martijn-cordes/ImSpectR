@@ -41,7 +41,7 @@ score_dataset(spectratype_dataset, no.peaks = 7)
 
 ## Analyze CDR3 sequencing data
 
-A control data set of healthy mice was included as a test set The data set is comprised of 4 C57Bl/6 mice from Charles River Laboratories. Samples include spleen and thymus tissue from each mouse. Tab seperated (tsv) files were dowloaded from the Adaptive Biotech database for immunoSEQ data: https://clients.adaptivebiotech.com/pub/b4ac7a84-1e69-4d60-8254-845720454d7d
+A control data set of healthy mice was included as a test set The data set is comprised of 2 C57Bl/6 mice from Charles River Laboratories. Samples include spleen tissue from each mouse. Tab seperated (tsv) files were dowloaded from the Adaptive Biotech database for immunoSEQ data: https://clients.adaptivebiotech.com/pub/b4ac7a84-1e69-4d60-8254-845720454d7d
 
 #### Preprocessing
 
