@@ -39,6 +39,25 @@ score_sample(spectratype_dataset[1], no.peaks = 7)
 score_dataset(spectratype_dataset, no.peaks = 7)
 ```
 
+#### Loading .fsa files and analyze dataset
+
+The 22 raw fsa files from the preloaded dataset are also included as external data as an example how to start analyzing Spectratype data from scratch:
+
+```r
+#Load raw data
+folder <- system.file("extdata/spectratype_data/", package="ImSpectR")
+fsa.loaded <- storing.inds(folder)
+
+#Preprocess
+my.ladder <- c(35, 50, 75, 100, 139, 150, 160, 200, 250,300, 340, 350, 400, 450, 490, 500)
+ladder.info.attach(stored=fsa.loaded, ladder=my.ladder, ladd.init.thresh=1000, draw=F,method="iter2")
+spectratype_dataset <- get_basepair_positions(fsa.loaded, cols = 1, my.ladder, channel.ladder=NULL,  init.thresh=1750, ladd.init.thresh=1000)
+
+#Score dataset
+score_dataset(spectratype_dataset, no.peaks = 7)
+```
+
+
 ## Analyze CDR3 sequencing data
 
 A control data set of healthy mice was included as a test set The data set is comprised of 2 C57Bl/6 mice from Charles River Laboratories. Samples include spleen tissue from each mouse. Tab seperated (tsv) files were dowloaded from the Adaptive Biotech database for immunoSEQ data: https://clients.adaptivebiotech.com/pub/b4ac7a84-1e69-4d60-8254-845720454d7d
