@@ -13,6 +13,10 @@ load_cdr3_seq <- function(folder, cdr3Length_column, geneFamily_column, sep=sep)
 
   options(warn=-1)
   options("getSymbols.warning4.0"=FALSE)
+
+  if (substr(folder, nchar(folder),nchar(folder)) != "/") {
+    folder <- paste(folder,"/",sep="")
+  }
   
   files <- list.files(folder)
 
