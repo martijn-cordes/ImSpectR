@@ -14,6 +14,14 @@ if (!require("devtools"))
 install.packages("devtools")
 devtools::install_github("martijn-cordes/ImSpectR")
 ```
+If the devtools-based approach does not work, you can download one of the built tar-balls from the builds directory and manually install the package from source by executing the following lines (replace DOWNLOAD_FOLDER with the absolute path to the tar-ball and VERSION with the version number of the downloaded package):
+
+```r
+install.packages("/DOWNLOAD_FOLDER/ImSpectR_VERSION.tar.gz",
+                     repos = NULL,
+                     type  = "source")
+
+```
 
 ## Analyze Spectratype data
 
