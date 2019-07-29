@@ -25,16 +25,16 @@ install.packages("/DOWNLOAD_FOLDER/ImSpectR_VERSION.tar.gz",
 
 ## Analyze Spectratype data
 
-To analyze a preloaded test dataset of 22 Vb families of a single C57Bl/6 mouse please run:
+#### Quick Loading .fsa files and analyze dataset with standard settings
+
+The 22 raw fsa files of 22 Vb families of a single C57Bl/6 mouse are included as external data as an example how to start analyzing Spectratype data from scratch:
 
 #### Preprocessing
 
 ```r
 library(ImSpectR)
-data(fsa.loaded)
-my.ladder <- c(35, 50, 75, 100, 139, 150, 160, 200, 250,300, 340, 350, 400, 450, 490, 500)
-ladder.info.attach(stored=fsa.loaded, ladder=my.ladder, ladd.init.thresh=1000, draw=F,method="iter2")
-spectratype_dataset <- get_basepair_positions(fsa.loaded, cols = 1, my.ladder, channel.ladder=NULL,  init.thresh=1750, ladd.init.thresh=1000)
+folder <- system.file("extdata/spectratype_data/", package="ImSpectR")
+spectratype_dataset <- preprocess_cdr3_spectratype(folder)
 ```
 #### Score a single sample 
 
@@ -47,15 +47,19 @@ score_sample(spectratype_dataset[1], no.peaks = 7)
 score_dataset(spectratype_dataset, no.peaks = 7)
 ```
 
-#### Loading .fsa files and analyze dataset
-
-The 22 raw fsa files from the preloaded dataset are also included as external data as an example how to start analyzing Spectratype data from scratch:
+#### Load Spectratype data with advanced settings
 
 ```r
 #Load raw data
 folder <- system.file("extdata/spectratype_data/", package="ImSpectR")
 fsa.loaded <- storing.inds(folder)
+```
 
+Parameters which should be considered changing for each run  when loading spectratype dataset are:
+- my.ladder() <- the known DNA fragment sizes used for the ladder to estimate the lengths of the sample fragments
+- ladd.init.thresh from ladder.info.attach() and get_basepair_positions() <- minimum fluorescent intensity (RFU) number for each ladder peak to be called a actual fragment peak.
+
+```r
 #Preprocess
 my.ladder <- c(35, 50, 75, 100, 139, 150, 160, 200, 250,300, 340, 350, 400, 450, 490, 500)
 ladder.info.attach(stored=fsa.loaded, ladder=my.ladder, ladd.init.thresh=1000, draw=F,method="iter2")
@@ -64,7 +68,6 @@ spectratype_dataset <- get_basepair_positions(fsa.loaded, cols = 1, my.ladder, c
 #Score dataset
 score_dataset(spectratype_dataset, no.peaks = 7)
 ```
-
 
 ## Analyze CDR3 sequencing data
 
