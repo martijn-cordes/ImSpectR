@@ -50,6 +50,7 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
     sample_data <- all_basepair_positions[[1]]$yy[position_template]
     names(sample_data) <- sample_name
 
+    #Threshold of 50 reads for max peaks for sequencing data and 500 fluorescent intensity for spectratype analysis
     threshold_analysis <- 50
     if(length(all_basepair_positions[[1]]$xx) > 3001) {
       threshold_analysis <- 500
