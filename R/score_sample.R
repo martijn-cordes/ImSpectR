@@ -11,6 +11,8 @@
 #' @export score_sample
 score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching=F, plot.curve.fitting=F, plot.expected.model=T, plot=T) {
 
+  assign("no.peaks", no.peaks, envir = .GlobalEnv)
+
   if(plot==F){
     plot.expected.model <-F
   }
@@ -48,7 +50,12 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
     sample_data <- all_basepair_positions[[1]]$yy[position_template]
     names(sample_data) <- sample_name
 
-    if(max(sample_data) < 500 | (three.bp.positions < 20) ) {
+    threshold_analysis <- 50
+    if(length(all_basepair_positions[[1]]$xx) > 3001) {
+      threshold_analysis <- 500
+    }
+
+    if(max(sample_data) < threshold_analysis | (three.bp.positions < 20) ) {
       message("No peak pattern found")
       if(alt.scores == T) {
         current_sample <- data.frame(peak.score.peak_score = 0,peak.score.GOF = 0,peak.score.PI=0)
@@ -269,8 +276,9 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
           current_sample <- data.frame(peak.score=peak_score)
         }
 
-        message("No peak pattern found")
+        rownames(current_sample) <- sample_name
 
+        message("No peak pattern found")
 
         if(plot==T) {
           plot( all_basepair_positions[[1]]$xx,  all_basepair_positions[[1]]$yy, type="l", xaxt="n",xlab="position in basepairs", ylab="" ,main=sample_name)

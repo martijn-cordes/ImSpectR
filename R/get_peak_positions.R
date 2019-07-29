@@ -34,16 +34,24 @@ get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T,plot.c
   #x coordinates for peaks of dtw matched pattern
   peaks <- fpeaks(alignment$y, f=200, amp=c(100,100), plot=F)
 
-  if (nrow(peaks) < 7){
+  if (nrow(peaks) < no.peaks){
     peaks <- fpeaks(alignment$y, f=200, amp=c(40,0.01), plot=F)
   }
 
-  if (nrow(peaks) < 7){
-    peaks <- fpeaks(alignment$y, f=200, amp=c(0.01,0.01), plot=F)
+  if (nrow(peaks) < no.peaks){
+    peaks <- fpeaks(alignment$y, f=200, amp=c(10,10), plot=F)
   }
 
-  if (nrow(peaks) > 7){
-    peaks <- fpeaks(alignment$y, f=200, amp=c(200,200), plot=F)
+  if (nrow(peaks) < no.peaks){
+    peaks <- fpeaks(alignment$y, f=200, amp=c(1,1), plot=F)
+  }
+
+  if (nrow(peaks) < no.peaks){
+    peaks <- fpeaks(alignment$y, f=200, amp=c(0.1,0.1), plot=F)
+  }
+
+  if (nrow(peaks) < no.peaks){
+    peaks <- fpeaks(alignment$y, f=200, amp=c(0.01,0.01), plot=F)
   }
 
   bp_positions_dtw_peaks <- c()

@@ -15,6 +15,28 @@ get_basepair_positions <- function (my.inds, cols = 1, ladder, channel.ladder = 
   options(warn=-1)
   options("getSymbols.warning4.0"=FALSE)
 
+  for (i in 1:length(my.inds)) {
+
+    my.inds[[i]][,1][which(my.inds[[i]][,1] < 0)] <- 0
+    my.inds[[i]][,2][which(my.inds[[i]][,2] < 0)] <- 0
+    my.inds[[i]][,4][which(my.inds[[i]][,4] < 0)] <- 0
+
+
+    left <- which(my.inds[[i]][,4] > (max(my.inds[[i]][,4][3000:length(my.inds[[i]][,4])])+100)) - 10
+    right <- which(my.inds[[i]][,4] > (max(my.inds[[i]][,4][3000:length(my.inds[[i]][,4])])+100)) + 10
+
+    if (length(left) + length(right) == 2) {
+
+      for(d in 1:length(left)) {
+
+        my.inds[[i]][,4][left[d]:right[d]] <- 0
+
+      }
+
+    }
+
+  }
+
   ci.upp = 1.96
   ci.low = 1.96
   dev = 50
