@@ -12,7 +12,7 @@
 score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching=F, plot.curve.fitting=F, plot.expected.model=T, plot=T) {
 
   assign("no.peaks", no.peaks, envir = .GlobalEnv)
-  
+
   if(plot==F){
     plot.expected.model <-F
   }
@@ -32,9 +32,14 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
   if(length(sample)>1) {
     current_sample <- score_dataset(sample, no.peaks, peak.margin=peak.margin, peak.window=peak.window, window.size=window.size, plot.pattern.matching = F, plot.curve.fitting = plot.curve.fitting, plot.expected.model = plot.expected.model, plot=plot, alt.scores=alt.scores)
   }
-  
-  else { 
 
+  else {
+
+    threshold_analysis <- 500
+    if(length(all_basepair_positions[[1]]$xx) < 3001) {
+      threshold_analysis <- 50
+      peak.window <- c(0,200)
+    }
 
     all_basepair_positions <- sample
     sample_name <- names(all_basepair_positions)
@@ -50,11 +55,8 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
     sample_data <- all_basepair_positions[[1]]$yy[position_template]
     names(sample_data) <- sample_name
 
-    threshold_analysis <- 50
-    if(length(all_basepair_positions[[1]]$xx) > 3001) {
-      threshold_analysis <- 500
-    }
-    
+
+
     if(max(sample_data) < threshold_analysis | (three.bp.positions < 20) ) {
       message("No peak pattern found")
       if(alt.scores == T) {
@@ -275,9 +277,9 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
           peak_score <- 0
           current_sample <- data.frame(peak.score=peak_score)
         }
-        
+
         rownames(current_sample) <- sample_name
-        
+
         message("No peak pattern found")
 
         if(plot==T) {
