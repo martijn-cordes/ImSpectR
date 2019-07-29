@@ -78,7 +78,7 @@ A control data set of healthy mice was included as a test set. The data set is c
 ```r
 library(ImSpectR)
 folder <- system.file("extdata/cdr_sequencing_data/", package="ImSpectR")
-sequencing_dataset <- preprocess_cdr3_seq(folder, cdr3Length_column = 5, geneFamily_column = 7, sep="")
+sequencing_dataset <- preprocess_cdr3_seq(folder, cdr3Length_column = 5, geneFamily_column = 7)
 ```
 #### Score a single sample 
 
