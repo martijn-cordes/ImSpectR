@@ -101,17 +101,16 @@ https://support.10xgenomics.com/single-cell-vdj/datasets/3.0.2/vdj_v1_hs_aggrega
 library(ImSpectR)
 folder <- "link_to_10X_data_folder/"
 sequencing_10x <- preprocess_cdr3_10x(folder)
-score_dataset(sequencing_10x, 9, plot.pattern.matching = F)
 ```
 #### Score a single sample 
 
 ```r
-score_sample(sequencing_dataset[1], no.peaks = 7)
+score_sample(sequencing_dataset[1], no.peaks = 9)
 ```
 #### Score complete dataset
 
 ```r
-score_dataset(sequencing_dataset, no.peaks = 7)
+score_dataset(sequencing_dataset, no.peaks = 9)
 ```
 
 
