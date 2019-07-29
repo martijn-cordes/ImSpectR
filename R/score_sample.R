@@ -12,7 +12,7 @@
 score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching=F, plot.curve.fitting=F, plot.expected.model=T, plot=T) {
 
   assign("no.peaks", no.peaks, envir = .GlobalEnv)
-
+  
   if(plot==F){
     plot.expected.model <-F
   }
@@ -32,8 +32,8 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
   if(length(sample)>1) {
     current_sample <- score_dataset(sample, no.peaks, peak.margin=peak.margin, peak.window=peak.window, window.size=window.size, plot.pattern.matching = F, plot.curve.fitting = plot.curve.fitting, plot.expected.model = plot.expected.model, plot=plot, alt.scores=alt.scores)
   }
-
-  else {
+  
+  else { 
 
 
     all_basepair_positions <- sample
@@ -50,12 +50,11 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
     sample_data <- all_basepair_positions[[1]]$yy[position_template]
     names(sample_data) <- sample_name
 
-    #Threshold of 50 reads for max peaks for sequencing data and 500 fluorescent intensity for spectratype analysis
     threshold_analysis <- 50
     if(length(all_basepair_positions[[1]]$xx) > 3001) {
       threshold_analysis <- 500
     }
-
+    
     if(max(sample_data) < threshold_analysis | (three.bp.positions < 20) ) {
       message("No peak pattern found")
       if(alt.scores == T) {
@@ -99,7 +98,7 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
           window_end <- which(all_basepair_positions[[1]]$xx > start+min.width.pattern)[1]
           sample_data <- all_basepair_positions[[1]]$yy[window_start:window_end]
 
-          if (max(sample_data) > 500) {
+          if (max(sample_data) > threshold_analysis) {
             pattern_alignment <- align_peak_pattern(query, all_basepair_positions, start=start, pattern.width = min.width.pattern, window.size = window.size,  plot=F)
 
             matched_pattern_range <- all_basepair_positions[[1]]$xx[pattern_alignment$x + which(all_basepair_positions[[1]]$xx > start)[1]]
@@ -276,9 +275,9 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
           peak_score <- 0
           current_sample <- data.frame(peak.score=peak_score)
         }
-
+        
         rownames(current_sample) <- sample_name
-
+        
         message("No peak pattern found")
 
         if(plot==T) {

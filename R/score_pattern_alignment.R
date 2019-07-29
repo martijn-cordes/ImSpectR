@@ -46,7 +46,7 @@ score_pattern_alignment <- function(bp_positions_dtw_peaks, no.peaks, three.bp.p
 
   if(plot.curve.fitting==T) {  points(x,y, type="l") }
   #if(plot==T) {  points(x,y, type="l") }
-
+  
   position_peak <- which(all_basepair_positions[[1]]$xx[pos_template] %in% bp_positions_dtw_peaks)
   max_peak_no <- which(y[x %in% position_peak] == max(y[x %in% position_peak]))
 
@@ -450,20 +450,20 @@ score_pattern_alignment <- function(bp_positions_dtw_peaks, no.peaks, three.bp.p
 
   if(plot==T) {
     if (alt.scores == T) {
-      legend("topright",
-             c(paste("ImSpectR score :", round(combined_score,2)),
-               paste("GOF :", round(chisq_score,2)),
-               paste("PV :", round(normalized_perturbation_index,2))
-             ))
+      # legend("topright",
+      #        c(paste("ImSpectR score :", round(combined_score,2)),
+      #          paste("GOF :", round(chisq_score,2)),
+      #          paste("PV :", round(normalized_perturbation_index,2))
+      #        ))
 
     }
     else {
-      legend("topleft",legend=c("Sample", "Expected Model"),
-            col=c("black", "red"),lty=1, cex=0.8)
-
-      legend("topright",
-             c( paste("Peak score:", round(combined_score ,2))
-             ))
+       legend("topleft",legend=c("Sample", "Expected Model"),
+             col=c("black", "red"),lty=1, cex=0.8)
+       
+       legend("topright",
+              c( paste("Peak score:", round(combined_score ,2))
+              ))
 
 
       # legend("topright",

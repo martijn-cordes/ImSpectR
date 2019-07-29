@@ -9,7 +9,7 @@
 #' @examples preprocess_cdr3_seq(folder, cdr3Length_column, geneFamily_column, sep="")
 #'
 #' @export preprocess_cdr3_seq
-preprocess_cdr3_seq <- function(folder, cdr3Length_column, geneFamily_column, sep=sep) {
+preprocess_cdr3_seq <- function(folder, cdr3Length_column, geneFamily_column, sep=NULL) {
   if(is.null(sep)) {
     sep <- "\t"
   }
@@ -33,7 +33,7 @@ preprocess_cdr3_seq <- function(folder, cdr3Length_column, geneFamily_column, se
 
     if (i == 1) {
 
-      ccdr3 <- read.delim(paste(folder, files[i], sep = ""), sep=sep)
+      cdr3 <- read.delim(paste(folder, files[i], sep = ""), sep=sep)
       cdr3 <- cdr3[,c(cdr3Length_column,geneFamily_column)]
       cdr3$sample <- gsub("\\..*","",files[i])
 

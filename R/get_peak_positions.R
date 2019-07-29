@@ -41,15 +41,15 @@ get_peak_positions <- function(alignment, sample, peak.margin=NULL,plot=T,plot.c
   if (nrow(peaks) < no.peaks){
     peaks <- fpeaks(alignment$y, f=200, amp=c(10,10), plot=F)
   }
-
+  
   if (nrow(peaks) < no.peaks){
     peaks <- fpeaks(alignment$y, f=200, amp=c(1,1), plot=F)
   }
-
+  
   if (nrow(peaks) < no.peaks){
     peaks <- fpeaks(alignment$y, f=200, amp=c(0.1,0.1), plot=F)
   }
-
+  
   if (nrow(peaks) < no.peaks){
     peaks <- fpeaks(alignment$y, f=200, amp=c(0.01,0.01), plot=F)
   }

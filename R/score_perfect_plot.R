@@ -179,7 +179,7 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
     y_single_peak  <- y_single_peak  * height_single_peak / max(y_single_peak )
     
     overlaps <- order(abs(y_second_curve[which(x %in% x_single_peak)] - y_single_peak))
-    overlaps <- overlaps[c(1,(which(abs(diff(overlaps)) > 5) + 1)[1])]
+    overlaps <- overlaps[c(1,(which(abs(diff(overlaps)) > 7) + 1)[1])]
     
     overlaps <- overlaps[order(overlaps)]
     overlap_1 <- overlaps[1]
@@ -187,7 +187,7 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
     
     
     all_overlaps <- c(all_overlaps,list(x_single_peak[overlaps]))
-    
+
     #if ((max(y_second_curve) / max(y) * 100) > 10 ) {
     
     x_single_peak <- x_single_peak[-c(c((1:overlap_1-1)),c((overlap_2+1):length(y_single_peak)))]
@@ -271,14 +271,14 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
   sample[x] <- sample[x] - y_second_curve
   sample[x][which(sample[x] < 0)] <- 0
   y <- y - y_second_curve
-  
+
   in_between_seperate <- c()
   in_between_max <- c()
   
   in_between_seperate <- c(in_between_seperate, sum(sample[(all_overlaps[[1]][1]-5):all_overlaps[[1]][1]]))
   in_between_max <- c(in_between_max, sum(y[(which(x == all_overlaps[[1]][1])-5) : which(x == all_overlaps[[1]][1])]))
-  
-  
+    
+
   for(o in 1:(length(all_overlaps)-1)) {
     in_between_seperate <- c(in_between_seperate, sum(sample[all_overlaps[[o]][2]:all_overlaps[[o+1]][1]]))
     in_between_max <- c(in_between_max, sum(y[which(x == all_overlaps[[o]][2]) : which(x == all_overlaps[[o+1]][1])]))
@@ -291,7 +291,7 @@ score_perfect_plot <- function(three.bp.positions, no.peaks, percentage_second_c
   #Score calculation
   plot_score <- (length(fraction) / sum(fraction)) * 100
   peak_score_correction <- 100/plot_score
-  
+
   score_1 <- plot_score * peak_score_correction
   
   plot_score_heights <- (length(fraction_heights) / sum(fraction_heights)) * 100
