@@ -11,6 +11,11 @@
 #' @export score_pattern_alignment
 score_pattern_alignment <- function(bp_positions_dtw_peaks, no.peaks, three.bp.positions, total.pattern.width, plot.curve.fitting=T, plot.expected.model =T , plot=T, alt.scores=F)
 {
+  sd_correction <- c(1,1)
+  if(length(all_basepair_positions[[1]]$xx) <= 3001) {
+    sd_correction <- c(1.5,20)
+  }
+
   sample <- all_basepair_positions[[1]]$yy[pos_template]
 
   score_curve_start <- which(all_basepair_positions[[1]]$xx[pos_template] %in% bp_positions_dtw_peaks)[1]
@@ -46,7 +51,7 @@ score_pattern_alignment <- function(bp_positions_dtw_peaks, no.peaks, three.bp.p
 
   if(plot.curve.fitting==T) {  points(x,y, type="l") }
   #if(plot==T) {  points(x,y, type="l") }
-  
+
   position_peak <- which(all_basepair_positions[[1]]$xx[pos_template] %in% bp_positions_dtw_peaks)
   max_peak_no <- which(y[x %in% position_peak] == max(y[x %in% position_peak]))
 
@@ -132,7 +137,7 @@ score_pattern_alignment <- function(bp_positions_dtw_peaks, no.peaks, three.bp.p
     sd <- round(three.bp.positions / (10-(log2(ceil(percentage_second_curve_height) +1)) ))
     slope_heightest_peak <- (y[mean(which(round(x) == position_peak[max_peak_no][1])[1])] / sd)
     sd <- y[mean(which(round(x) == position_peak[p])[1])] / slope_heightest_peak
-    sd <- sd + (log2((max(y)/ y[mean(which(round(x) == position_peak[p])[1])]))*(log10(ceil(percentage_second_curve_height) +1)))
+    sd <- sd*sd_correction[1] + (log2((max(y)/ y[mean(which(round(x) == position_peak[p])[1])]))*(log10(ceil(percentage_second_curve_height) + sd_correction[2])))
     sds <- c(sds, sd)
 
     height_single_peak <- y[mean(which(round(x) == position_peak[p])[1])]
@@ -460,7 +465,7 @@ score_pattern_alignment <- function(bp_positions_dtw_peaks, no.peaks, three.bp.p
     else {
        legend("topleft",legend=c("Sample", "Expected Model"),
              col=c("black", "red"),lty=1, cex=0.8)
-       
+
        legend("topright",
               c( paste("Peak score:", round(combined_score ,2))
               ))

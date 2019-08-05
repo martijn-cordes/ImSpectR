@@ -17,8 +17,7 @@ score_dataset <- function(dataset, no.peaks, peak.margin=NULL, peak.window=NULL,
   for (i in 1:length(dataset)) {
     message("\nAnalyzing sample: ",names(dataset[i]))
 
-
-    scored_sample <- score_sample(dataset[i], no.peaks, peak.margin=peak.margin, peak.window=peak.window, window.size=window.size, plot.pattern.matching = plot.pattern.matching, plot.curve.fitting = plot.curve.fitting, plot.expected.model = plot.expected.model, plot=plot, alt.scores=alt.scores)
+    scored_sample <- score_sample(dataset[i], no.peaks, alt.scores = F, peak.margin=NULL, peak.window=NULL, window.size=NULL, plot.pattern.matching=plot.pattern.matching, plot.curve.fitting=plot.curve.fitting, plot.expected.model=plot.expected.model, plot=plot)
     scored_dataset <- rbind(scored_dataset, scored_sample)
     setTxtProgressBar(pb, i)
   }

@@ -13,6 +13,15 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
 
   assign("no.peaks", no.peaks, envir = .GlobalEnv)
 
+  all_basepair_positions <- sample
+  sample_name <- names(all_basepair_positions)
+
+  threshold_analysis <- 500
+  if(length(all_basepair_positions[[1]]$xx) <= 3001) {
+    threshold_analysis <- 50
+    peak.window <- c(0,200)
+  }
+
   if(plot==F){
     plot.expected.model <-F
   }
@@ -34,15 +43,6 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
   }
 
   else {
-
-    threshold_analysis <- 500
-    if(length(all_basepair_positions[[1]]$xx) < 3001) {
-      threshold_analysis <- 50
-      peak.window <- c(0,200)
-    }
-
-    all_basepair_positions <- sample
-    sample_name <- names(all_basepair_positions)
 
     three.bp.positions <- length(which((all_basepair_positions[[1]]$xx > peak.window[1]) & (all_basepair_positions[[1]]$xx < (peak.window[1]+3))))
     total.pattern.width <- three.bp.positions * no.peaks
