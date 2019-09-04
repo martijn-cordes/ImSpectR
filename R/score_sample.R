@@ -55,8 +55,6 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
     sample_data <- all_basepair_positions[[1]]$yy[position_template]
     names(sample_data) <- sample_name
 
-
-
     if(max(sample_data) < threshold_analysis | (three.bp.positions < 20) ) {
       message("No peak pattern found")
       if(alt.scores == T) {
