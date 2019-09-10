@@ -1,7 +1,7 @@
 Package: ImSpectR
 Type: Package
 Title: R package to quantify CDR3 data for immune repertoire diversity
-Version: 1.7.5
+Version: 1.7.6
 Author: Martijn Cordes
 Maintainer: Martijn Cordes <m.cordesf@lumc.nl>
 Description: With this package .fsa intensity files or files with sequencing lengths representing the CDR3 region of T-cell receptors can be loaded, visualized and scored for quantification of the immune repertoire.
