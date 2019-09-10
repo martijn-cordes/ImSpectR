@@ -55,7 +55,26 @@ score_sample <- function(sample, no.peaks, alt.scores = F, peak.margin=NULL, pea
     sample_data <- all_basepair_positions[[1]]$yy[position_template]
     names(sample_data) <- sample_name
 
-    if(max(sample_data) < threshold_analysis | (three.bp.positions < 20) ) {
+    if(sum(all_basepair_positions[[1]]$xx[1:100])/100 < -100) {
+      message("Incompatible ladder")
+
+      if(alt.scores == T) {
+        current_sample <- data.frame(peak.score.peak_score = 0,peak.score.GOF = 0,peak.score.PI=0)
+      }
+      else{
+        peak_score <- 0
+        current_sample <- data.frame(peak.score=peak_score)
+      }
+
+      rownames(current_sample) <- sample_name
+
+      if(plot==T) {
+        plot( all_basepair_positions[[1]]$xx,  all_basepair_positions[[1]]$yy, type="l", xaxt="n",xlab="position in basepairs", ylab="" ,main=sample_name)
+        axis(side=1,at=seq(0,length(all_basepair_positions[[1]]$xx),10))
+      }
+    }
+
+    else if (max(sample_data) < threshold_analysis | (three.bp.positions < 20) ) {
       message("No peak pattern found")
       if(alt.scores == T) {
         current_sample <- data.frame(peak.score.peak_score = 0,peak.score.GOF = 0,peak.score.PI=0)
