@@ -105,12 +105,12 @@ sequencing_10x <- preprocess_cdr3_10x(folder)
 #### Score a single sample 
 
 ```r
-score_sample(sequencing_dataset[1], no.peaks = 9)
+score_sample(sequencing_10x[1], no.peaks = 9)
 ```
 #### Score complete dataset
 
 ```r
-score_dataset(sequencing_dataset, no.peaks = 9)
+score_dataset(sequencing_10x, no.peaks = 9)
 ```
 
 
